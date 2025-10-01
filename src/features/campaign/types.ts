@@ -26,3 +26,13 @@ export const CAMPAIGN_CATEGORY_ICONS: Record<CampaignCategory, string> = {
   lifestyle: '🏠',
   other: '📦',
 };
+
+export type CampaignStatus = 'draft' | 'active' | 'paused' | 'completed' | 'cancelled';
+
+export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
+  draft: '임시저장',
+  active: '진행중',
+  paused: '일시정지',
+  completed: '완료',
+  cancelled: '취소',
+};

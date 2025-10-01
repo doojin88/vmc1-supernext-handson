@@ -59,3 +59,63 @@ export type GetCampaignRequest = z.infer<typeof GetCampaignRequestSchema>;
 export const GetCampaignResponseSchema = CampaignSchema;
 
 export type GetCampaignResponse = z.infer<typeof GetCampaignResponseSchema>;
+
+export const CreateCampaignRequestSchema = z.object({
+  title: z.string().min(1, '캠페인 제목을 입력해주세요').max(100),
+  description: z.string().min(10, '캠페인 설명은 최소 10자 이상 입력해주세요').max(2000),
+  category: CampaignCategorySchema,
+  targetAudience: z.string().min(10, '대상 고객은 최소 10자 이상 입력해주세요').max(500),
+  requirements: z.string().min(10, '참여 조건은 최소 10자 이상 입력해주세요').max(1000),
+  compensation: z.string().min(1, '보상을 입력해주세요').max(200),
+  applicationDeadline: z.string().datetime(),
+  campaignStartDate: z.string().datetime(),
+  campaignEndDate: z.string().datetime(),
+  maxParticipants: z.number().int().min(1, '최소 1명 이상이어야 합니다').max(1000),
+}).refine(
+  (data) => new Date(data.applicationDeadline) > new Date(),
+  {
+    message: '신청 마감일은 현재 시간보다 늦어야 합니다',
+    path: ['applicationDeadline'],
+  }
+).refine(
+  (data) => new Date(data.campaignStartDate) > new Date(data.applicationDeadline),
+  {
+    message: '캠페인 시작일은 신청 마감일보다 늦어야 합니다',
+    path: ['campaignStartDate'],
+  }
+).refine(
+  (data) => new Date(data.campaignEndDate) > new Date(data.campaignStartDate),
+  {
+    message: '캠페인 종료일은 시작일보다 늦어야 합니다',
+    path: ['campaignEndDate'],
+  }
+);
+
+export type CreateCampaignRequest = z.infer<typeof CreateCampaignRequestSchema>;
+
+export const CreateCampaignResponseSchema = z.object({
+  campaignId: z.string().uuid(),
+  status: CampaignStatusSchema,
+});
+
+export type CreateCampaignResponse = z.infer<typeof CreateCampaignResponseSchema>;
+
+export const ListAdvertiserCampaignsRequestSchema = z.object({
+  page: z.number().int().min(1).default(1),
+  limit: z.number().int().min(1).max(50).default(20),
+  status: CampaignStatusSchema.optional(),
+});
+
+export type ListAdvertiserCampaignsRequest = z.infer<typeof ListAdvertiserCampaignsRequestSchema>;
+
+export const ListAdvertiserCampaignsResponseSchema = z.object({
+  campaigns: z.array(CampaignSchema),
+  pagination: z.object({
+    page: z.number().int(),
+    limit: z.number().int(),
+    total: z.number().int(),
+    totalPages: z.number().int(),
+  }),
+});
+
+export type ListAdvertiserCampaignsResponse = z.infer<typeof ListAdvertiserCampaignsResponseSchema>;
