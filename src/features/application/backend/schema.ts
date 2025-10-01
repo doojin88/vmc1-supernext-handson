@@ -54,3 +54,40 @@ export const ListApplicationsResponseSchema = z.object({
 });
 
 export type ListApplicationsResponse = z.infer<typeof ListApplicationsResponseSchema>;
+
+export const UpdateApplicationStatusRequestSchema = z.object({
+  applicationId: z.string().uuid(),
+  status: ApplicationStatusSchema,
+  feedback: z.string().optional(),
+});
+
+export type UpdateApplicationStatusRequest = z.infer<typeof UpdateApplicationStatusRequestSchema>;
+
+export const UpdateApplicationStatusResponseSchema = z.object({
+  applicationId: z.string().uuid(),
+  status: ApplicationStatusSchema,
+  updatedAt: z.string().datetime(),
+});
+
+export type UpdateApplicationStatusResponse = z.infer<typeof UpdateApplicationStatusResponseSchema>;
+
+export const ListCampaignApplicationsRequestSchema = z.object({
+  campaignId: z.string().uuid(),
+  page: z.number().int().min(1).default(1),
+  limit: z.number().int().min(1).max(50).default(20),
+  status: ApplicationStatusSchema.optional(),
+});
+
+export type ListCampaignApplicationsRequest = z.infer<typeof ListCampaignApplicationsRequestSchema>;
+
+export const ListCampaignApplicationsResponseSchema = z.object({
+  applications: z.array(ApplicationSchema),
+  pagination: z.object({
+    page: z.number().int(),
+    limit: z.number().int(),
+    total: z.number().int(),
+    totalPages: z.number().int(),
+  }),
+});
+
+export type ListCampaignApplicationsResponse = z.infer<typeof ListCampaignApplicationsResponseSchema>;

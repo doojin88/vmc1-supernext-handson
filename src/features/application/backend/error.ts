@@ -5,6 +5,8 @@ export const applicationErrorCodes = {
   applicationClosed: 'APPLICATION_CLOSED',
   duplicateApplication: 'DUPLICATE_APPLICATION',
   invalidApplicationData: 'INVALID_APPLICATION_DATA',
+  applicationUpdateFailed: 'APPLICATION_UPDATE_FAILED',
+  unauthorizedAccess: 'UNAUTHORIZED_ACCESS',
   validationError: 'VALIDATION_ERROR',
   databaseError: 'DATABASE_ERROR',
 } as const;
