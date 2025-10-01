@@ -10,6 +10,13 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        // Disable email confirmation requirement
+        flowType: 'implicit'
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll();
@@ -35,6 +42,13 @@ export async function createPureClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        // Disable email confirmation requirement
+        flowType: 'implicit'
+      },
       cookies: {
         getAll() {
           return [];

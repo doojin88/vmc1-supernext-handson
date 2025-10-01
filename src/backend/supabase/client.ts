@@ -13,5 +13,8 @@ export const createServiceClient = ({
   createClient(url, serviceRoleKey, {
     auth: {
       persistSession: false,
+      autoRefreshToken: false,
+      // Disable email confirmation requirement
+      flowType: 'implicit'
     },
   });

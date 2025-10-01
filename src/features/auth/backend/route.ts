@@ -44,27 +44,13 @@ export const registerAuthRoutes = (app: Hono<AppEnv>) => {
     return respond(c, result);
   });
 
-  // Development helper: Confirm email for existing users
-  app.post('/auth/confirm-email', async (c) => {
-    const body = await c.req.json();
-    const { email } = body;
-
-    if (!email) {
-      return respond(
-        c,
-        failure(
-          400,
-          authErrorCodes.validationError,
-          '이메일이 필요합니다',
-        ),
-      );
-    }
-
+  // Development helper: Disable email confirmation for all users
+  app.post('/auth/disable-email-confirmation', async (c) => {
     const supabase = getSupabase(c);
     const logger = getLogger(c);
 
     try {
-      // Update user email confirmation status
+      // Get all users
       const { data: users, error: listError } = await supabase.auth.admin.listUsers();
       
       if (listError) {
@@ -78,39 +64,31 @@ export const registerAuthRoutes = (app: Hono<AppEnv>) => {
         );
       }
 
-      const user = users.users.find(u => u.email === email);
-      if (!user) {
-        return respond(
-          c,
-          failure(
-            404,
-            authErrorCodes.authServiceError,
-            '사용자를 찾을 수 없습니다',
-          ),
-        );
-      }
-
-      // Update user to confirm email
-      const { error: updateError } = await supabase.auth.admin.updateUserById(
-        user.id,
-        { email_confirm: true }
+      // Update all users to confirm email
+      const updatePromises = users.users.map(user => 
+        supabase.auth.admin.updateUserById(user.id, { 
+          email_confirm: true,
+          user_metadata: {
+            ...user.user_metadata,
+            email_confirmed: true
+          }
+        })
       );
 
-      if (updateError) {
-        return respond(
-          c,
-          failure(
-            500,
-            authErrorCodes.authServiceError,
-            `이메일 확인 실패: ${updateError.message}`,
-          ),
-        );
-      }
+      const results = await Promise.allSettled(updatePromises);
+      const successful = results.filter(r => r.status === 'fulfilled').length;
+      const failed = results.filter(r => r.status === 'rejected').length;
 
-      return respond(c, success({ message: '이메일이 확인되었습니다' }));
+      logger.info(`Email confirmation disabled for ${successful} users, ${failed} failed`);
+
+      return respond(c, success({ 
+        message: `이메일 확인이 ${successful}명의 사용자에 대해 비활성화되었습니다`,
+        successful,
+        failed
+      }));
     } catch (error) {
       const message = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다';
-      logger.error('Email confirmation failed', { error: message });
+      logger.error('Email confirmation disable failed', { error: message });
       return respond(
         c,
         failure(500, authErrorCodes.authServiceError, message),

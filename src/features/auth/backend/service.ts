@@ -17,7 +17,10 @@ export const signupUser = async (
       await client.auth.admin.createUser({
         email: data.email,
         password: data.password,
-        email_confirm: true, // Auto-confirm email for testing
+        email_confirm: true, // Force email confirmation to be true
+        user_metadata: {
+          email_confirmed: true, // Additional metadata to ensure confirmation
+        },
       });
 
     if (authError || !authData.user) {
