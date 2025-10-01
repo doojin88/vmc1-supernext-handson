@@ -17,7 +17,7 @@ export const signupUser = async (
       await client.auth.admin.createUser({
         email: data.email,
         password: data.password,
-        email_confirm: false,
+        email_confirm: true, // Auto-confirm email for testing
       });
 
     if (authError || !authData.user) {
@@ -69,7 +69,7 @@ export const signupUser = async (
       userId,
       email: authData.user.email!,
       role: data.role,
-      requiresEmailVerification: true,
+      requiresEmailVerification: false,
     });
   } catch (error) {
     const message =

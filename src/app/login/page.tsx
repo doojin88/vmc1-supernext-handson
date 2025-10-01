@@ -49,7 +49,9 @@ export default function LoginPage({ params }: LoginPageProps) {
         });
 
         const nextAction = result.error
-          ? result.error.message ?? "로그인에 실패했습니다."
+          ? (result.error.message === "Email not confirmed" 
+              ? "이메일 확인이 필요합니다. 이메일을 확인해주세요."
+              : result.error.message ?? "로그인에 실패했습니다.")
           : ("success" as const);
 
         if (nextAction === "success") {
