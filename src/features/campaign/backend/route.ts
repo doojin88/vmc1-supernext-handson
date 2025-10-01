@@ -9,8 +9,8 @@ import {
   getSupabase,
   type AppEnv,
 } from '@/backend/hono/context';
-import { ListCampaignsRequestSchema } from './schema';
-import { listCampaigns } from './service';
+import { ListCampaignsRequestSchema, GetCampaignRequestSchema } from './schema';
+import { listCampaigns, getCampaign } from './service';
 import { campaignErrorCodes, type CampaignServiceError } from './error';
 
 export const registerCampaignRoutes = (app: Hono<AppEnv>) => {
@@ -46,6 +46,35 @@ export const registerCampaignRoutes = (app: Hono<AppEnv>) => {
     if (!result.ok) {
       const errorResult = result as ErrorResult<CampaignServiceError, unknown>;
       logger.error('Campaign listing failed', errorResult.error);
+    }
+
+    return respond(c, result);
+  });
+
+  app.get('/campaigns/:id', async (c) => {
+    const id = c.req.param('id');
+    const parsed = GetCampaignRequestSchema.safeParse({ id });
+
+    if (!parsed.success) {
+      return respond(
+        c,
+        failure(
+          400,
+          campaignErrorCodes.invalidCampaignId,
+          '잘못된 캠페인 ID입니다',
+          parsed.error.format(),
+        ),
+      );
+    }
+
+    const supabase = getSupabase(c);
+    const logger = getLogger(c);
+
+    const result = await getCampaign(supabase, parsed.data);
+
+    if (!result.ok) {
+      const errorResult = result as ErrorResult<CampaignServiceError, unknown>;
+      logger.error('Campaign retrieval failed', errorResult.error);
     }
 
     return respond(c, result);

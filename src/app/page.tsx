@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +14,7 @@ import { CampaignFilter } from '@/features/campaign/components/campaign-filter';
 import type { CampaignCategory } from '@/features/campaign/types';
 
 export default function HomePage() {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<CampaignCategory | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,8 +27,7 @@ export default function HomePage() {
   });
 
   const handleViewDetails = (campaignId: string) => {
-    // TODO: Navigate to campaign detail page
-    console.log('View campaign details:', campaignId);
+    router.push(`/campaigns/${campaignId}`);
   };
 
   return (

@@ -4,7 +4,7 @@ import {
   success,
   type HandlerResult,
 } from '@/backend/http/response';
-import type { ListCampaignsRequest, ListCampaignsResponse } from './schema';
+import type { ListCampaignsRequest, ListCampaignsResponse, GetCampaignRequest, GetCampaignResponse } from './schema';
 import { campaignErrorCodes, type CampaignServiceError } from './error';
 
 export const listCampaigns = async (
@@ -85,8 +85,8 @@ export const listCampaigns = async (
       maxParticipants: campaign.max_participants,
       currentParticipants: campaign.current_participants,
       status: campaign.status,
-      advertiserName: campaign.advertiser_profiles.company_name,
-      advertiserBusinessType: campaign.advertiser_profiles.business_type,
+      advertiserName: (campaign.advertiser_profiles as any).company_name,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
       createdAt: campaign.created_at,
       updatedAt: campaign.updated_at,
     }));
@@ -102,6 +102,92 @@ export const listCampaigns = async (
         totalPages,
       },
     });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다';
+    return failure(500, campaignErrorCodes.databaseError, message);
+  }
+};
+
+export const getCampaign = async (
+  client: SupabaseClient,
+  params: GetCampaignRequest,
+): Promise<HandlerResult<GetCampaignResponse, CampaignServiceError, unknown>> => {
+  try {
+    const { id } = params;
+
+    const { data: campaign, error } = await client
+      .from('campaigns')
+      .select(`
+        id,
+        title,
+        description,
+        category,
+        target_audience,
+        requirements,
+        compensation,
+        application_deadline,
+        campaign_start_date,
+        campaign_end_date,
+        max_participants,
+        current_participants,
+        status,
+        created_at,
+        updated_at,
+        advertiser_profiles!inner(
+          company_name,
+          business_type
+        )
+      `)
+      .eq('id', id)
+      .eq('status', 'active')
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return failure(
+          404,
+          campaignErrorCodes.campaignNotFound,
+          '캠페인을 찾을 수 없습니다',
+        );
+      }
+      return failure(
+        500,
+        campaignErrorCodes.databaseError,
+        `캠페인 조회 실패: ${error.message}`,
+      );
+    }
+
+    if (!campaign) {
+      return failure(
+        404,
+        campaignErrorCodes.campaignNotFound,
+        '캠페인을 찾을 수 없습니다',
+      );
+    }
+
+    // Transform data
+    const transformedCampaign = {
+      id: campaign.id,
+      title: campaign.title,
+      description: campaign.description,
+      category: campaign.category,
+      targetAudience: campaign.target_audience,
+      requirements: campaign.requirements,
+      compensation: campaign.compensation,
+      applicationDeadline: campaign.application_deadline,
+      campaignStartDate: campaign.campaign_start_date,
+      campaignEndDate: campaign.campaign_end_date,
+      maxParticipants: campaign.max_participants,
+      currentParticipants: campaign.current_participants,
+      status: campaign.status,
+      advertiserName: (campaign.advertiser_profiles as any).company_name,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
+      createdAt: campaign.created_at,
+      updatedAt: campaign.updated_at,
+    };
+
+    return success(transformedCampaign);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다';

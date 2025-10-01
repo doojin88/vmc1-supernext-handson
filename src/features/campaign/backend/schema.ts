@@ -49,3 +49,13 @@ export const ListCampaignsResponseSchema = z.object({
 });
 
 export type ListCampaignsResponse = z.infer<typeof ListCampaignsResponseSchema>;
+
+export const GetCampaignRequestSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export type GetCampaignRequest = z.infer<typeof GetCampaignRequestSchema>;
+
+export const GetCampaignResponseSchema = CampaignSchema;
+
+export type GetCampaignResponse = z.infer<typeof GetCampaignResponseSchema>;
