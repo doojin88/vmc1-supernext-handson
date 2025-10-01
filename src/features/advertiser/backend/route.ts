@@ -34,7 +34,8 @@ export const registerAdvertiserRoutes = (app: Hono<AppEnv>) => {
     const logger = getLogger(c);
 
     // Get user ID from auth context (would need to be added to middleware)
-    const userId = 'temp-user-id'; // TODO: Get from auth context
+    // For now, generate a temporary UUID for testing
+    const userId = crypto.randomUUID(); // TODO: Get from auth context
 
     const result = await createAdvertiserProfile(supabase, userId, parsed.data);
 

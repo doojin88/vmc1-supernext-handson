@@ -13,7 +13,30 @@ export const createInfluencerProfile = async (
   data: CreateProfileRequest,
 ): Promise<HandlerResult<CreateProfileResponse, InfluencerServiceError, unknown>> => {
   try {
-    // 1. Insert influencer profile
+    // 1. Check if user profile exists
+    const { data: existingUser, error: userCheckError } = await client
+      .from('user_profiles')
+      .select('id, role')
+      .eq('id', userId)
+      .single();
+
+    if (userCheckError) {
+      return failure(
+        404,
+        influencerErrorCodes.profileCreationFailed,
+        `사용자 프로필을 찾을 수 없습니다: ${userCheckError.message}`,
+      );
+    }
+
+    if (existingUser.role !== 'influencer') {
+      return failure(
+        400,
+        influencerErrorCodes.profileCreationFailed,
+        '인플루언서 역할이 아닙니다',
+      );
+    }
+
+    // 2. Insert influencer profile
     const { error: profileError } = await client
       .from('influencer_profiles')
       .insert({

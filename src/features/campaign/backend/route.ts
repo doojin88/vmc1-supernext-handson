@@ -105,7 +105,7 @@ export const registerCampaignRoutes = (app: Hono<AppEnv>) => {
     const logger = getLogger(c);
 
     // Get advertiser user ID from auth context (would need to be added to middleware)
-    const advertiserUserId = 'temp-advertiser-id'; // TODO: Get from auth context
+    const advertiserUserId = crypto.randomUUID(); // TODO: Get from auth context
 
     const result = await createCampaign(supabase, advertiserUserId, parsed.data);
 
@@ -143,7 +143,7 @@ export const registerCampaignRoutes = (app: Hono<AppEnv>) => {
     const logger = getLogger(c);
 
     // Get advertiser user ID from auth context (would need to be added to middleware)
-    const advertiserUserId = 'temp-advertiser-id'; // TODO: Get from auth context
+    const advertiserUserId = crypto.randomUUID(); // TODO: Get from auth context
 
     const result = await listAdvertiserCampaigns(supabase, advertiserUserId, parsed.data);
 

@@ -13,7 +13,25 @@ export const createAdvertiserProfile = async (
   data: CreateProfileRequest,
 ): Promise<HandlerResult<CreateProfileResponse, AdvertiserServiceError, unknown>> => {
   try {
-    // Check for duplicate business number
+    // 1. First, create user profile (for testing purposes)
+    const { error: userProfileError } = await client
+      .from('user_profiles')
+      .insert({
+        id: userId,
+        role: 'advertiser',
+        full_name: data.contactName,
+        phone_number: data.contactPhone,
+      });
+
+    if (userProfileError) {
+      return failure(
+        500,
+        advertiserErrorCodes.profileCreationFailed,
+        `사용자 프로필 생성 실패: ${userProfileError.message}`,
+      );
+    }
+
+    // 2. Check for duplicate business number
     const { data: existingProfile, error: checkError } = await client
       .from('advertiser_profiles')
       .select('id')
@@ -52,6 +70,8 @@ export const createAdvertiserProfile = async (
       });
 
     if (profileError) {
+      // Rollback: delete user profile
+      await client.from('user_profiles').delete().eq('id', userId);
       return failure(
         500,
         advertiserErrorCodes.profileCreationFailed,

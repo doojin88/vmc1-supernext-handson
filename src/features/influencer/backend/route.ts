@@ -34,7 +34,8 @@ export const registerInfluencerRoutes = (app: Hono<AppEnv>) => {
     const logger = getLogger(c);
 
     // Get user ID from auth context (would need to be added to middleware)
-    const userId = 'temp-user-id'; // TODO: Get from auth context
+    // For testing, use a known user ID from signup
+    const userId = '6bb21301-ad32-4aa0-bc2c-eedccdb4f3a9'; // TODO: Get from auth context
 
     const result = await createInfluencerProfile(supabase, userId, parsed.data);
 
