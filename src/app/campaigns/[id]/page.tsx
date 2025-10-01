@@ -231,8 +231,7 @@ export default function CampaignDetailPage() {
               className="w-full"
               disabled={!canApply}
               onClick={() => {
-                // TODO: Navigate to application page
-                console.log('Apply to campaign:', campaign.id);
+                router.push(`/campaigns/${campaign.id}/apply`);
               }}
             >
               {canApply ? '체험단 신청하기' : isFull ? '모집 완료' : '신청 마감'}
