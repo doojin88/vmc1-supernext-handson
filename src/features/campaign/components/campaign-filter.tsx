@@ -16,7 +16,7 @@ type CampaignFilterProps = {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   selectedCategory: CampaignCategory;
-  onCategoryChange: (category: CampaignCategory) => void;
+  onCategoryChange?: (category: CampaignCategory) => void;
 };
 
 export const CampaignFilter = ({
@@ -26,9 +26,6 @@ export const CampaignFilter = ({
   onCategoryChange,
 }: CampaignFilterProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
-
-  // Debug logging
-  console.log('CampaignFilter props:', { searchQuery, onSearchChange, selectedCategory, onCategoryChange });
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,9 +40,7 @@ export const CampaignFilter = ({
   const clearAllFilters = () => {
     setLocalSearchQuery('');
     onSearchChange('');
-    if (typeof onCategoryChange === 'function') {
-      onCategoryChange('all' as CampaignCategory);
-    }
+    onCategoryChange?.('all' as CampaignCategory);
   };
 
   const hasActiveFilters = searchQuery || selectedCategory !== 'all';
@@ -86,14 +81,7 @@ export const CampaignFilter = ({
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
-              onClick={() => {
-                console.log('Category clicked:', category, 'onCategoryChange:', onCategoryChange);
-                if (typeof onCategoryChange === 'function') {
-                  onCategoryChange(category as CampaignCategory);
-                } else {
-                  console.error('onCategoryChange is not a function:', onCategoryChange);
-                }
-              }}
+              onClick={() => onCategoryChange?.(category as CampaignCategory)}
               className={`${
                 selectedCategory === category 
                   ? CATEGORY_COLORS[category]
@@ -135,11 +123,7 @@ export const CampaignFilter = ({
                 카테고리: {CATEGORY_LABELS[selectedCategory]}
                 <X
                   className="h-3 w-3 cursor-pointer"
-                  onClick={() => {
-                    if (typeof onCategoryChange === 'function') {
-                      onCategoryChange('all' as CampaignCategory);
-                    }
-                  }}
+                  onClick={() => onCategoryChange?.('all' as CampaignCategory)}
                 />
               </Badge>
             )}
