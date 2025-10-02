@@ -21,7 +21,7 @@ export const listCampaigns = async (
   params: ListCampaignsRequest,
 ): Promise<HandlerResult<ListCampaignsResponse, CampaignServiceError, unknown>> => {
   try {
-    const { page, limit, status = 'recruiting', search } = params;
+    const { page, limit, status = 'recruiting', search, category } = params;
     const offset = (page - 1) * limit;
 
     // Build query
@@ -40,6 +40,7 @@ export const listCampaigns = async (
         store_address,
         store_phone,
         status,
+        category,
         created_at,
         updated_at,
         advertiser_profiles!inner(
@@ -54,6 +55,11 @@ export const listCampaigns = async (
     // Apply search filter
     if (search) {
       query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
+    }
+
+    // Apply category filter
+    if (category && category !== 'all') {
+      query = query.eq('category', category);
     }
 
     const { data: campaigns, error, count } = await query;
@@ -89,6 +95,7 @@ export const listCampaigns = async (
       storeAddress: campaign.store_address,
       storePhone: campaign.store_phone,
       status: campaign.status,
+      category: campaign.category,
       advertiserName: (campaign.advertiser_profiles as any).business_name,
       advertiserBusinessType: (campaign.advertiser_profiles as any).category,
       createdAt: campaign.created_at,
@@ -183,6 +190,7 @@ export const getCampaign = async (
       storeAddress: campaign.store_address,
       storePhone: campaign.store_phone,
       status: campaign.status,
+      category: campaign.category,
       advertiserName: (campaign.advertiser_profiles as any).business_name,
       advertiserBusinessType: (campaign.advertiser_profiles as any).category,
       createdAt: campaign.created_at,
@@ -218,6 +226,7 @@ export const createCampaign = async (
         store_name: data.storeName,
         store_address: data.storeAddress,
         store_phone: data.storePhone,
+        category: data.category,
         status: 'recruiting',
       })
       .select()
@@ -316,6 +325,7 @@ export const listAdvertiserCampaigns = async (
       storeAddress: campaign.store_address,
       storePhone: campaign.store_phone,
       status: campaign.status,
+      category: campaign.category,
       advertiserName: (campaign.advertiser_profiles as any).business_name,
       advertiserBusinessType: (campaign.advertiser_profiles as any).category,
       createdAt: campaign.created_at,

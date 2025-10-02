@@ -12,10 +12,12 @@ import { useCampaignsQuery } from '@/features/campaign/hooks/useCampaignsQuery';
 import { CampaignCard } from '@/features/campaign/components/campaign-card';
 import { CampaignFilter } from '@/features/campaign/components/campaign-filter';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
+import { type CampaignCategory } from '@/features/campaign/constants/categories';
 
 export default function HomePage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<CampaignCategory>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const { isAuthenticated } = useCurrentUser();
 
@@ -23,6 +25,7 @@ export default function HomePage() {
     page: currentPage,
     limit: 12,
     search: searchQuery || undefined,
+    category: selectedCategory !== 'all' ? selectedCategory : undefined,
   });
 
   const handleViewDetails = (campaignId: string) => {
@@ -65,6 +68,8 @@ export default function HomePage() {
                 <CampaignFilter
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={setSelectedCategory}
                 />
               </Card>
             </div>

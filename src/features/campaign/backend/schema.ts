@@ -1,13 +1,18 @@
 import { z } from 'zod';
+import { CAMPAIGN_CATEGORIES } from '../constants/categories';
 
 export const CampaignStatusSchema = z.enum(['recruiting', 'recruitment_closed', 'selection_completed']);
 export type CampaignStatus = z.infer<typeof CampaignStatusSchema>;
+
+export const CampaignCategorySchema = z.enum(CAMPAIGN_CATEGORIES);
+export type CampaignCategory = z.infer<typeof CampaignCategorySchema>;
 
 export const ListCampaignsRequestSchema = z.object({
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(50).default(20),
   status: z.enum(['recruiting', 'recruitment_closed', 'selection_completed']).optional(),
   search: z.string().optional(),
+  category: CampaignCategorySchema.optional(),
 });
 
 export type ListCampaignsRequest = z.infer<typeof ListCampaignsRequestSchema>;
@@ -25,6 +30,7 @@ export const CampaignSchema = z.object({
   storeAddress: z.string(),
   storePhone: z.string().nullable(),
   status: CampaignStatusSchema,
+  category: CampaignCategorySchema,
   advertiserName: z.string(),
   advertiserBusinessType: z.string(),
   createdAt: z.string(),
@@ -66,6 +72,7 @@ export const CreateCampaignRequestSchema = z.object({
   storeName: z.string().min(1, '매장명을 입력해주세요').max(100),
   storeAddress: z.string().min(1, '매장 주소를 입력해주세요').max(200),
   storePhone: z.string().max(20).optional(),
+  category: CampaignCategorySchema,
 }).refine(
   (data) => new Date(data.recruitmentStartDate) <= new Date(data.recruitmentEndDate),
   {
