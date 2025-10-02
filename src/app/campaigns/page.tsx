@@ -20,14 +20,6 @@ export default function CampaignsPage() {
     search: searchQuery || undefined,
   });
 
-  // Debug logging
-  console.log('Campaigns Page Debug:', {
-    isLoading,
-    error: error?.message,
-    errorDetails: error,
-    campaignsData,
-    campaignsLength: campaignsData?.campaigns?.length,
-  });
 
   const handleViewDetails = (campaignId: string) => {
     router.push(`/campaigns/${campaignId}`);
