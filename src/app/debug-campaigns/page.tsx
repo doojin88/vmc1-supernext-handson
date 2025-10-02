@@ -11,7 +11,7 @@ export default function DebugCampaignsPage() {
   const testApi = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/campaigns?page=1&limit=5');
+      const response = await fetch('/api/campaigns?page=1&limit=12');
       const data = await response.json();
       setDebugInfo({
         status: response.status,
