@@ -67,7 +67,7 @@ export const Header = () => {
                     <div className="flex items-center gap-2 text-sm text-slate-600">
                       <User className="h-4 w-4" />
                       <span className="hidden sm:inline">
-                        {user.full_name || user.email}
+                        {user.email}
                       </span>
                     </div>
                     <Button

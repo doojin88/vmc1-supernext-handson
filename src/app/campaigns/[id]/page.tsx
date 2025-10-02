@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, Calendar, Users, Building2, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useCampaignQuery } from '@/features/campaign/hooks/useCampaignQuery';
-import { CAMPAIGN_CATEGORY_LABELS, CAMPAIGN_CATEGORY_COLORS, CAMPAIGN_CATEGORY_ICONS } from '@/features/campaign/types';
+import { CAMPAIGN_STATUS_LABELS, CAMPAIGN_STATUS_COLORS } from '@/features/campaign/types';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -58,8 +58,8 @@ export default function CampaignDetailPage() {
     );
   }
 
-  const isApplicationOpen = new Date(campaign.applicationDeadline) > new Date();
-  const isFull = campaign.currentParticipants >= campaign.maxParticipants;
+  const isApplicationOpen = new Date(campaign.recruitmentEndDate) > new Date();
+  const isFull = campaign.status === 'recruitment_closed' || campaign.status === 'selection_completed';
   const canApply = isApplicationOpen && !isFull;
 
   return (
@@ -79,10 +79,9 @@ export default function CampaignDetailPage() {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-3">
               <Badge
-                className={`${CAMPAIGN_CATEGORY_COLORS[campaign.category]} flex items-center gap-1`}
+                className={`${CAMPAIGN_STATUS_COLORS[campaign.status]} flex items-center gap-1`}
               >
-                <span>{CAMPAIGN_CATEGORY_ICONS[campaign.category]}</span>
-                {CAMPAIGN_CATEGORY_LABELS[campaign.category]}
+                {CAMPAIGN_STATUS_LABELS[campaign.status]}
               </Badge>
               {!canApply && (
                 <Badge variant="secondary">
@@ -120,25 +119,38 @@ export default function CampaignDetailPage() {
             </div>
           </Card>
 
-          {/* Target Audience */}
+          {/* Mission */}
           <Card className="p-6">
             <h2 className="text-xl font-semibold text-slate-900 mb-4">
-              대상 고객
-            </h2>
-            <p className="text-slate-700 leading-relaxed">
-              {campaign.targetAudience}
-            </p>
-          </Card>
-
-          {/* Requirements */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-slate-900 mb-4">
-              참여 조건
+              미션
             </h2>
             <div className="prose prose-slate max-w-none">
               <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
-                {campaign.requirements}
+                {campaign.mission}
               </p>
+            </div>
+          </Card>
+
+          {/* Store Information */}
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold text-slate-900 mb-4">
+              매장 정보
+            </h2>
+            <div className="space-y-3">
+              <div>
+                <span className="font-medium text-slate-900">매장명:</span>
+                <span className="ml-2 text-slate-700">{campaign.storeName}</span>
+              </div>
+              <div>
+                <span className="font-medium text-slate-900">주소:</span>
+                <span className="ml-2 text-slate-700">{campaign.storeAddress}</span>
+              </div>
+              {campaign.storePhone && (
+                <div>
+                  <span className="font-medium text-slate-900">전화번호:</span>
+                  <span className="ml-2 text-slate-700">{campaign.storePhone}</span>
+                </div>
+              )}
             </div>
           </Card>
         </div>
@@ -152,18 +164,10 @@ export default function CampaignDetailPage() {
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">참여자 수</span>
+                <span className="text-sm text-slate-600">모집 인원</span>
                 <span className="font-medium">
-                  {campaign.currentParticipants}/{campaign.maxParticipants}명
+                  {campaign.recruitmentCount}명
                 </span>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-2">
-                <div
-                  className="bg-slate-400 h-2 rounded-full"
-                  style={{
-                    width: `${(campaign.currentParticipants / campaign.maxParticipants) * 100}%`,
-                  }}
-                />
               </div>
               <div className="flex items-center gap-2 text-sm">
                 {canApply ? (
@@ -196,7 +200,7 @@ export default function CampaignDetailPage() {
                     신청 마감
                   </p>
                   <p className="text-sm text-slate-600">
-                    {formatDateTime(campaign.applicationDeadline)}
+                    {formatDate(campaign.recruitmentEndDate)}
                   </p>
                 </div>
               </div>
@@ -204,23 +208,23 @@ export default function CampaignDetailPage() {
                 <Calendar className="h-5 w-5 text-slate-500 mt-0.5" />
                 <div>
                   <p className="text-sm font-medium text-slate-900">
-                    캠페인 기간
+                    모집 기간
                   </p>
                   <p className="text-sm text-slate-600">
-                    {formatDate(campaign.campaignStartDate)} ~ {formatDate(campaign.campaignEndDate)}
+                    {formatDate(campaign.recruitmentStartDate)} ~ {formatDate(campaign.recruitmentEndDate)}
                   </p>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Compensation */}
+          {/* Benefits */}
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-slate-900 mb-4">
-              보상 안내
+              혜택 안내
             </h3>
             <p className="text-slate-700 leading-relaxed">
-              {campaign.compensation}
+              {campaign.benefits}
             </p>
           </Card>
 

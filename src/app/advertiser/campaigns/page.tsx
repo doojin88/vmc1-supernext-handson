@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, ArrowLeft, Eye, Edit, BarChart3 } from 'lucide-react';
 import { useAdvertiserCampaignsQuery } from '@/features/campaign/hooks/useAdvertiserCampaignsQuery';
 import { CampaignCreationForm } from '@/features/campaign/components/campaign-creation-form';
-import { CAMPAIGN_STATUS_LABELS, CAMPAIGN_CATEGORY_LABELS, CAMPAIGN_CATEGORY_ICONS } from '@/features/campaign/types';
+import { CAMPAIGN_STATUS_LABELS } from '@/features/campaign/types';
 import type { CampaignStatus } from '@/features/campaign/types';
 
 export default function AdvertiserCampaignsPage() {
@@ -34,11 +34,9 @@ export default function AdvertiserCampaignsPage() {
   };
 
   const statusCounts = {
-    draft: campaignsData?.campaigns.filter(campaign => campaign.status === 'draft').length || 0,
-    active: campaignsData?.campaigns.filter(campaign => campaign.status === 'active').length || 0,
-    paused: campaignsData?.campaigns.filter(campaign => campaign.status === 'paused').length || 0,
-    completed: campaignsData?.campaigns.filter(campaign => campaign.status === 'completed').length || 0,
-    cancelled: campaignsData?.campaigns.filter(campaign => campaign.status === 'cancelled').length || 0,
+    recruiting: campaignsData?.campaigns.filter(campaign => campaign.status === 'recruiting').length || 0,
+    recruitment_closed: campaignsData?.campaigns.filter(campaign => campaign.status === 'recruitment_closed').length || 0,
+    selection_completed: campaignsData?.campaigns.filter(campaign => campaign.status === 'selection_completed').length || 0,
   };
 
   if (showCreateForm) {
@@ -113,7 +111,7 @@ export default function AdvertiserCampaignsPage() {
               </div>
               
               <div className="space-y-2">
-                {(['draft', 'active', 'paused', 'completed', 'cancelled'] as CampaignStatus[]).map((status) => (
+                {(['recruiting', 'recruitment_closed', 'selection_completed'] as CampaignStatus[]).map((status) => (
                   <div
                     key={status}
                     className={`p-2 rounded-md cursor-pointer transition-colors ${
@@ -142,33 +140,21 @@ export default function AdvertiserCampaignsPage() {
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">임시저장</span>
-                <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-                  {statusCounts.draft}건
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">진행중</span>
+                <span className="text-sm text-slate-600">모집중</span>
                 <Badge variant="secondary" className="bg-green-100 text-green-800">
-                  {statusCounts.active}건
+                  {statusCounts.recruiting}건
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">일시정지</span>
+                <span className="text-sm text-slate-600">모집마감</span>
                 <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                  {statusCounts.paused}건
+                  {statusCounts.recruitment_closed}건
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">완료</span>
+                <span className="text-sm text-slate-600">선발완료</span>
                 <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                  {statusCounts.completed}건
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">취소</span>
-                <Badge variant="secondary" className="bg-red-100 text-red-800">
-                  {statusCounts.cancelled}건
+                  {statusCounts.selection_completed}건
                 </Badge>
               </div>
             </div>
@@ -226,13 +212,13 @@ export default function AdvertiserCampaignsPage() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <Badge
-                            variant={campaign.status === 'active' ? 'default' : 'secondary'}
+                            variant={campaign.status === 'recruiting' ? 'default' : 'secondary'}
                             className="text-xs"
                           >
                             {CAMPAIGN_STATUS_LABELS[campaign.status]}
                           </Badge>
                           <span className="text-xs text-slate-500">
-                            {CAMPAIGN_CATEGORY_ICONS[campaign.category]} {CAMPAIGN_CATEGORY_LABELS[campaign.category]}
+                            {campaign.advertiserBusinessType}
                           </span>
                         </div>
                         <h3 className="text-lg font-semibold text-slate-900 mb-2">
@@ -248,13 +234,13 @@ export default function AdvertiserCampaignsPage() {
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-slate-600">모집 인원</span>
                         <span className="font-medium">
-                          {campaign.currentParticipants}/{campaign.maxParticipants}명
+                          {campaign.recruitmentCount}명
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-slate-600">신청 마감</span>
                         <span className="font-medium">
-                          {new Date(campaign.applicationDeadline).toLocaleDateString('ko-KR')}
+                          {new Date(campaign.recruitmentEndDate).toLocaleDateString('ko-KR')}
                         </span>
                       </div>
                     </div>
@@ -269,7 +255,7 @@ export default function AdvertiserCampaignsPage() {
                         <Eye className="h-4 w-4 mr-2" />
                         상세보기
                       </Button>
-                      {campaign.status === 'draft' && (
+                      {campaign.status === 'recruiting' && (
                         <Button
                           variant="outline"
                           size="sm"

@@ -53,8 +53,8 @@ export default function CampaignApplicationPage() {
     );
   }
 
-  const isApplicationOpen = new Date(campaign.applicationDeadline) > new Date();
-  const isFull = campaign.currentParticipants >= campaign.maxParticipants;
+  const isApplicationOpen = new Date(campaign.recruitmentEndDate) > new Date();
+  const isFull = campaign.status === 'recruitment_closed' || campaign.status === 'selection_completed';
   const canApply = isApplicationOpen && !isFull;
 
   if (!canApply) {

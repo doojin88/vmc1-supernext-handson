@@ -99,7 +99,7 @@ export default function AdvertiserCampaignDetailPage() {
               </div>
               <div className="flex items-center gap-1">
                 <Users className="h-4 w-4" />
-                <span>{campaign.currentParticipants}/{campaign.maxParticipants}명</span>
+                <span>{campaign.recruitmentCount}명</span>
               </div>
             </div>
           </div>
@@ -117,18 +117,18 @@ export default function AdvertiserCampaignDetailPage() {
               <div>
                 <p className="text-sm font-medium text-slate-700">신청 마감</p>
                 <p className="text-sm text-slate-600">
-                  {formatDateTime(campaign.applicationDeadline)}
+                  {formatDate(campaign.recruitmentEndDate)}
                 </p>
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-700">캠페인 기간</p>
                 <p className="text-sm text-slate-600">
-                  {formatDate(campaign.campaignStartDate)} ~ {formatDate(campaign.campaignEndDate)}
+                  {formatDate(campaign.recruitmentStartDate)} ~ {formatDate(campaign.recruitmentEndDate)}
                 </p>
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-700">보상</p>
-                <p className="text-sm text-slate-600">{campaign.compensation}</p>
+                <p className="text-sm text-slate-600">{campaign.benefits}</p>
               </div>
             </div>
           </Card>

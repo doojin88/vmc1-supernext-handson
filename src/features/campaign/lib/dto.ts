@@ -18,5 +18,4 @@ export {
   type ListAdvertiserCampaignsResponse,
   type Campaign,
   type CampaignStatus,
-  type CampaignCategory,
 } from '../backend/schema';
