@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Users, TrendingUp, Star, Search } from 'lucide-react';
+import { Users, TrendingUp, Star, Search, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCampaignsQuery } from '@/features/campaign/hooks/useCampaignsQuery';
@@ -42,29 +42,6 @@ export default function HomePage() {
               인플루언서와 광고주를 연결하는 체험단 플랫폼입니다. 다양한
               제품을 체험하고 솔직한 리뷰를 작성해보세요.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              {!isAuthenticated && (
-                <>
-                  <Button asChild size="lg">
-                    <Link href="/signup">
-                      시작하기
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild>
-                    <Link href="/login">로그인</Link>
-                  </Button>
-                </>
-              )}
-              {isAuthenticated && (
-                <Button asChild size="lg">
-                  <Link href="/dashboard">
-                    대시보드
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              )}
-            </div>
           </div>
         </div>
       </section>
