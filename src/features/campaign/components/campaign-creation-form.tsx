@@ -7,8 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useCreateCampaignMutation } from '../hooks/useCreateCampaignMutation';
-import { CAMPAIGN_CATEGORY_LABELS, CAMPAIGN_CATEGORY_ICONS } from '../types';
-import type { CreateCampaignRequest, CampaignCategory } from '../lib/dto';
+import type { CreateCampaignRequest } from '../lib/dto';
 
 type CampaignCreationFormProps = {
   onSuccess: () => void;
@@ -23,14 +22,14 @@ export const CampaignCreationForm = ({
   const [formData, setFormData] = useState<CreateCampaignRequest>({
     title: '',
     description: '',
-    category: 'food',
-    targetAudience: '',
-    requirements: '',
-    compensation: '',
-    applicationDeadline: '',
-    campaignStartDate: '',
-    campaignEndDate: '',
-    maxParticipants: 10,
+    recruitmentStartDate: '',
+    recruitmentEndDate: '',
+    recruitmentCount: 10,
+    benefits: '',
+    mission: '',
+    storeName: '',
+    storeAddress: '',
+    storePhone: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -53,8 +52,6 @@ export const CampaignCreationForm = ({
   };
 
   const isSubmitDisabled = createCampaignMutation.isPending;
-
-  const categories: CampaignCategory[] = ['food', 'beauty', 'fashion', 'tech', 'lifestyle', 'other'];
 
   return (
     <Card className="p-6">
@@ -84,23 +81,6 @@ export const CampaignCreationForm = ({
           )}
         </div>
 
-        <div>
-          <Label htmlFor="category" className="text-sm font-medium text-slate-700">
-            카테고리 *
-          </Label>
-          <select
-            id="category"
-            value={formData.category}
-            onChange={(e) => handleInputChange('category', e.target.value as CampaignCategory)}
-            className="w-full mt-1 rounded-md border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none"
-          >
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {CAMPAIGN_CATEGORY_ICONS[category]} {CAMPAIGN_CATEGORY_LABELS[category]}
-              </option>
-            ))}
-          </select>
-        </div>
 
         <div>
           <Label htmlFor="description" className="text-sm font-medium text-slate-700">
@@ -125,129 +105,145 @@ export const CampaignCreationForm = ({
         </div>
 
         <div>
-          <Label htmlFor="targetAudience" className="text-sm font-medium text-slate-700">
-            대상 고객 *
+          <Label htmlFor="benefits" className="text-sm font-medium text-slate-700">
+            혜택 *
           </Label>
           <Textarea
-            id="targetAudience"
-            value={formData.targetAudience}
-            onChange={(e) => handleInputChange('targetAudience', e.target.value)}
-            placeholder="타겟 고객층을 설명해주세요"
+            id="benefits"
+            value={formData.benefits}
+            onChange={(e) => handleInputChange('benefits', e.target.value)}
+            placeholder="인플루언서에게 제공할 혜택을 입력해주세요"
             rows={3}
-            className={`mt-1 ${errors.targetAudience ? 'border-red-500' : ''}`}
+            className={`mt-1 ${errors.benefits ? 'border-red-500' : ''}`}
           />
           <div className="flex justify-between items-center mt-1">
-            {errors.targetAudience && (
-              <p className="text-sm text-red-500">{errors.targetAudience}</p>
+            {errors.benefits && (
+              <p className="text-sm text-red-500">{errors.benefits}</p>
             )}
             <p className="text-xs text-slate-500 ml-auto">
-              {formData.targetAudience.length}/500자
+              {formData.benefits.length}/1000자
             </p>
           </div>
         </div>
 
         <div>
-          <Label htmlFor="requirements" className="text-sm font-medium text-slate-700">
-            참여 조건 *
+          <Label htmlFor="mission" className="text-sm font-medium text-slate-700">
+            미션 *
           </Label>
           <Textarea
-            id="requirements"
-            value={formData.requirements}
-            onChange={(e) => handleInputChange('requirements', e.target.value)}
-            placeholder="인플루언서가 충족해야 할 조건을 입력해주세요"
+            id="mission"
+            value={formData.mission}
+            onChange={(e) => handleInputChange('mission', e.target.value)}
+            placeholder="인플루언서가 수행해야 할 미션을 입력해주세요"
             rows={3}
-            className={`mt-1 ${errors.requirements ? 'border-red-500' : ''}`}
+            className={`mt-1 ${errors.mission ? 'border-red-500' : ''}`}
           />
           <div className="flex justify-between items-center mt-1">
-            {errors.requirements && (
-              <p className="text-sm text-red-500">{errors.requirements}</p>
+            {errors.mission && (
+              <p className="text-sm text-red-500">{errors.mission}</p>
             )}
             <p className="text-xs text-slate-500 ml-auto">
-              {formData.requirements.length}/1000자
+              {formData.mission.length}/1000자
             </p>
           </div>
         </div>
 
         <div>
-          <Label htmlFor="compensation" className="text-sm font-medium text-slate-700">
-            보상 *
-          </Label>
-          <Input
-            id="compensation"
-            value={formData.compensation}
-            onChange={(e) => handleInputChange('compensation', e.target.value)}
-            placeholder="제공할 보상을 입력하세요 (예: 제품 무료 제공, 현금 지급 등)"
-            className={`mt-1 ${errors.compensation ? 'border-red-500' : ''}`}
-          />
-          {errors.compensation && (
-            <p className="text-sm text-red-500 mt-1">{errors.compensation}</p>
-          )}
-        </div>
-
-        <div>
-          <Label htmlFor="maxParticipants" className="text-sm font-medium text-slate-700">
+          <Label htmlFor="recruitmentCount" className="text-sm font-medium text-slate-700">
             모집 인원 *
           </Label>
           <Input
-            id="maxParticipants"
+            id="recruitmentCount"
             type="number"
-            value={formData.maxParticipants}
-            onChange={(e) => handleInputChange('maxParticipants', Number(e.target.value))}
+            value={formData.recruitmentCount}
+            onChange={(e) => handleInputChange('recruitmentCount', Number(e.target.value))}
             min="1"
             max="1000"
-            className={`mt-1 ${errors.maxParticipants ? 'border-red-500' : ''}`}
+            className={`mt-1 ${errors.recruitmentCount ? 'border-red-500' : ''}`}
           />
-          {errors.maxParticipants && (
-            <p className="text-sm text-red-500 mt-1">{errors.maxParticipants}</p>
+          {errors.recruitmentCount && (
+            <p className="text-sm text-red-500 mt-1">{errors.recruitmentCount}</p>
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <Label htmlFor="storeName" className="text-sm font-medium text-slate-700">
+            매장명 *
+          </Label>
+          <Input
+            id="storeName"
+            value={formData.storeName}
+            onChange={(e) => handleInputChange('storeName', e.target.value)}
+            placeholder="매장명을 입력하세요"
+            className={`mt-1 ${errors.storeName ? 'border-red-500' : ''}`}
+          />
+          {errors.storeName && (
+            <p className="text-sm text-red-500 mt-1">{errors.storeName}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="storeAddress" className="text-sm font-medium text-slate-700">
+            매장 주소 *
+          </Label>
+          <Input
+            id="storeAddress"
+            value={formData.storeAddress}
+            onChange={(e) => handleInputChange('storeAddress', e.target.value)}
+            placeholder="매장 주소를 입력하세요"
+            className={`mt-1 ${errors.storeAddress ? 'border-red-500' : ''}`}
+          />
+          {errors.storeAddress && (
+            <p className="text-sm text-red-500 mt-1">{errors.storeAddress}</p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="storePhone" className="text-sm font-medium text-slate-700">
+            매장 전화번호
+          </Label>
+          <Input
+            id="storePhone"
+            value={formData.storePhone}
+            onChange={(e) => handleInputChange('storePhone', e.target.value)}
+            placeholder="매장 전화번호를 입력하세요 (선택사항)"
+            className={`mt-1 ${errors.storePhone ? 'border-red-500' : ''}`}
+          />
+          {errors.storePhone && (
+            <p className="text-sm text-red-500 mt-1">{errors.storePhone}</p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="applicationDeadline" className="text-sm font-medium text-slate-700">
-              신청 마감일 *
+            <Label htmlFor="recruitmentStartDate" className="text-sm font-medium text-slate-700">
+              모집 시작일 *
             </Label>
             <Input
-              id="applicationDeadline"
-              type="datetime-local"
-              value={formData.applicationDeadline}
-              onChange={(e) => handleInputChange('applicationDeadline', e.target.value)}
-              className={`mt-1 ${errors.applicationDeadline ? 'border-red-500' : ''}`}
+              id="recruitmentStartDate"
+              type="date"
+              value={formData.recruitmentStartDate}
+              onChange={(e) => handleInputChange('recruitmentStartDate', e.target.value)}
+              className={`mt-1 ${errors.recruitmentStartDate ? 'border-red-500' : ''}`}
             />
-            {errors.applicationDeadline && (
-              <p className="text-sm text-red-500 mt-1">{errors.applicationDeadline}</p>
+            {errors.recruitmentStartDate && (
+              <p className="text-sm text-red-500 mt-1">{errors.recruitmentStartDate}</p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="campaignStartDate" className="text-sm font-medium text-slate-700">
-              캠페인 시작일 *
+            <Label htmlFor="recruitmentEndDate" className="text-sm font-medium text-slate-700">
+              모집 마감일 *
             </Label>
             <Input
-              id="campaignStartDate"
-              type="datetime-local"
-              value={formData.campaignStartDate}
-              onChange={(e) => handleInputChange('campaignStartDate', e.target.value)}
-              className={`mt-1 ${errors.campaignStartDate ? 'border-red-500' : ''}`}
+              id="recruitmentEndDate"
+              type="date"
+              value={formData.recruitmentEndDate}
+              onChange={(e) => handleInputChange('recruitmentEndDate', e.target.value)}
+              className={`mt-1 ${errors.recruitmentEndDate ? 'border-red-500' : ''}`}
             />
-            {errors.campaignStartDate && (
-              <p className="text-sm text-red-500 mt-1">{errors.campaignStartDate}</p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="campaignEndDate" className="text-sm font-medium text-slate-700">
-              캠페인 종료일 *
-            </Label>
-            <Input
-              id="campaignEndDate"
-              type="datetime-local"
-              value={formData.campaignEndDate}
-              onChange={(e) => handleInputChange('campaignEndDate', e.target.value)}
-              className={`mt-1 ${errors.campaignEndDate ? 'border-red-500' : ''}`}
-            />
-            {errors.campaignEndDate && (
-              <p className="text-sm text-red-500 mt-1">{errors.campaignEndDate}</p>
+            {errors.recruitmentEndDate && (
+              <p className="text-sm text-red-500 mt-1">{errors.recruitmentEndDate}</p>
             )}
           </div>
         </div>

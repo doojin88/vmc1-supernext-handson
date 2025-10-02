@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Users, Building2 } from 'lucide-react';
 import type { Campaign } from '../lib/dto';
-import { CAMPAIGN_CATEGORY_LABELS, CAMPAIGN_CATEGORY_COLORS, CAMPAIGN_CATEGORY_ICONS } from '../types';
+import { CAMPAIGN_STATUS_LABELS, CAMPAIGN_STATUS_COLORS } from '../types';
 
 type CampaignCardProps = {
   campaign: Campaign;
@@ -15,9 +15,9 @@ type CampaignCardProps = {
 };
 
 export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => {
-  const isApplicationOpen = new Date(campaign.applicationDeadline) > new Date();
-  const isFull = campaign.currentParticipants >= campaign.maxParticipants;
-  const canApply = isApplicationOpen && !isFull;
+  const isApplicationOpen = new Date(campaign.recruitmentEndDate) > new Date();
+  const isFull = campaign.status === 'recruitment_closed' || campaign.status === 'selection_completed';
+  const canApply = isApplicationOpen && !isFull && campaign.status === 'recruiting';
 
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MM/dd (EEE)', { locale: ko });
@@ -29,10 +29,9 @@ export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => 
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <Badge
-              className={`${CAMPAIGN_CATEGORY_COLORS[campaign.category]} flex items-center gap-1`}
+              className={`${CAMPAIGN_STATUS_COLORS[campaign.status]} flex items-center gap-1`}
             >
-              <span>{CAMPAIGN_CATEGORY_ICONS[campaign.category]}</span>
-              {CAMPAIGN_CATEGORY_LABELS[campaign.category]}
+              {CAMPAIGN_STATUS_LABELS[campaign.status]}
             </Badge>
             {!canApply && (
               <Badge variant="secondary">
@@ -59,28 +58,20 @@ export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => 
 
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <Calendar className="h-4 w-4" />
-          <span>신청마감: {formatDate(campaign.applicationDeadline)}</span>
+          <span>모집마감: {formatDate(campaign.recruitmentEndDate)}</span>
         </div>
 
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <Users className="h-4 w-4" />
           <span>
-            {campaign.currentParticipants}/{campaign.maxParticipants}명
+            모집인원: {campaign.recruitmentCount}명
           </span>
-          <div className="flex-1 bg-slate-200 rounded-full h-2">
-            <div
-              className="bg-slate-400 h-2 rounded-full"
-              style={{
-                width: `${(campaign.currentParticipants / campaign.maxParticipants) * 100}%`,
-              }}
-            />
-          </div>
         </div>
       </div>
 
       <div className="flex items-center justify-between">
         <div className="text-sm text-slate-500">
-          <span>보상: {campaign.compensation}</span>
+          <span>혜택: {campaign.benefits}</span>
         </div>
         <Button
           variant={canApply ? 'default' : 'outline'}
