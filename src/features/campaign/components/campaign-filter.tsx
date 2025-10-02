@@ -40,7 +40,7 @@ export const CampaignFilter = ({
   const clearAllFilters = () => {
     setLocalSearchQuery('');
     onSearchChange('');
-    onCategoryChange('all');
+    onCategoryChange('all' as CampaignCategory);
   };
 
   const hasActiveFilters = searchQuery || selectedCategory !== 'all';
@@ -81,7 +81,7 @@ export const CampaignFilter = ({
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
-              onClick={() => onCategoryChange(category)}
+              onClick={() => onCategoryChange(category as CampaignCategory)}
               className={`${
                 selectedCategory === category 
                   ? CATEGORY_COLORS[category]
@@ -123,7 +123,7 @@ export const CampaignFilter = ({
                 카테고리: {CATEGORY_LABELS[selectedCategory]}
                 <X
                   className="h-3 w-3 cursor-pointer"
-                  onClick={() => onCategoryChange('all')}
+                  onClick={() => onCategoryChange('all' as CampaignCategory)}
                 />
               </Badge>
             )}
