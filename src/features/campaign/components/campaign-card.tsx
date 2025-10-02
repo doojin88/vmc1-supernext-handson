@@ -16,16 +16,12 @@ type CampaignCardProps = {
 
 export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => {
   const isApplicationOpen = new Date(campaign.recruitmentEndDate) > new Date();
-  const isFull = campaign.status === 'recruitment_closed' || campaign.status === 'selection_completed';
-  const canApply = isApplicationOpen && !isFull && campaign.status === 'recruiting';
+  const canApply = isApplicationOpen && campaign.status === 'recruiting';
 
   // Determine the actual status to display
   const getDisplayStatus = () => {
-    if (campaign.status === 'selection_completed') {
-      return { label: '선택완료', color: 'bg-gray-100 text-gray-800' };
-    }
     if (campaign.status === 'recruitment_closed') {
-      return { label: '모집종료', color: 'bg-gray-100 text-gray-800' };
+      return { label: '마감', color: 'bg-gray-100 text-gray-800' };
     }
     if (!isApplicationOpen) {
       return { label: '마감', color: 'bg-gray-100 text-gray-800' };
