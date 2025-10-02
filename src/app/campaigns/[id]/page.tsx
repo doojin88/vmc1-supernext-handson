@@ -59,8 +59,7 @@ export default function CampaignDetailPage() {
   }
 
   const isApplicationOpen = new Date(campaign.recruitmentEndDate) > new Date();
-  const isFull = campaign.status === 'recruitment_closed' || campaign.status === 'selection_completed';
-  const canApply = isApplicationOpen && !isFull;
+  const canApply = isApplicationOpen && campaign.status === 'recruiting';
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-8">

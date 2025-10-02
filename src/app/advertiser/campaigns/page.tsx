@@ -35,8 +35,7 @@ export default function AdvertiserCampaignsPage() {
 
   const statusCounts = {
     recruiting: campaignsData?.campaigns.filter(campaign => campaign.status === 'recruiting').length || 0,
-    recruitment_closed: campaignsData?.campaigns.filter(campaign => campaign.status === 'recruitment_closed').length || 0,
-    selection_completed: campaignsData?.campaigns.filter(campaign => campaign.status === 'selection_completed').length || 0,
+    closed: campaignsData?.campaigns.filter(campaign => campaign.status === 'closed').length || 0,
   };
 
   if (showCreateForm) {
@@ -111,7 +110,7 @@ export default function AdvertiserCampaignsPage() {
               </div>
               
               <div className="space-y-2">
-                {(['recruiting', 'recruitment_closed', 'selection_completed'] as CampaignStatus[]).map((status) => (
+                {(['recruiting', 'closed'] as CampaignStatus[]).map((status) => (
                   <div
                     key={status}
                     className={`p-2 rounded-md cursor-pointer transition-colors ${
@@ -146,15 +145,9 @@ export default function AdvertiserCampaignsPage() {
                 </Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">모집마감</span>
-                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                  {statusCounts.recruitment_closed}건
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">선발완료</span>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                  {statusCounts.selection_completed}건
+                <span className="text-sm text-slate-600">마감</span>
+                <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+                  {statusCounts.closed}건
                 </Badge>
               </div>
             </div>

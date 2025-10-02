@@ -17,7 +17,7 @@ export type CampaignCategory = typeof CAMPAIGN_CATEGORIES[number];
 export const CAMPAIGN_STATUSES = [
   'all',
   'recruiting',
-  'recruitment_closed'
+  'closed'
 ] as const;
 
 export type CampaignStatus = typeof CAMPAIGN_STATUSES[number];
@@ -39,7 +39,7 @@ export const CATEGORY_LABELS: Record<CampaignCategory, string> = {
 export const STATUS_LABELS: Record<CampaignStatus, string> = {
   all: '전체',
   recruiting: '모집중',
-  recruitment_closed: '마감',
+  closed: '마감',
 };
 
 export const CATEGORY_COLORS: Record<CampaignCategory, string> = {
@@ -59,5 +59,5 @@ export const CATEGORY_COLORS: Record<CampaignCategory, string> = {
 export const STATUS_COLORS: Record<CampaignStatus, string> = {
   all: 'bg-slate-900 text-white',
   recruiting: 'bg-green-100 text-green-800',
-  recruitment_closed: 'bg-gray-100 text-gray-800',
+  closed: 'bg-gray-100 text-gray-800',
 };

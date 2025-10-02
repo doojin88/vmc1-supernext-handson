@@ -1,13 +1,11 @@
-export type CampaignStatus = 'recruiting' | 'recruitment_closed' | 'selection_completed';
+export type CampaignStatus = 'recruiting' | 'closed';
 
 export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
   recruiting: '모집중',
-  recruitment_closed: '모집마감',
-  selection_completed: '선발완료',
+  closed: '마감',
 };
 
 export const CAMPAIGN_STATUS_COLORS: Record<CampaignStatus, string> = {
   recruiting: 'bg-green-100 text-green-800',
-  recruitment_closed: 'bg-yellow-100 text-yellow-800',
-  selection_completed: 'bg-blue-100 text-blue-800',
+  closed: 'bg-gray-100 text-gray-800',
 };

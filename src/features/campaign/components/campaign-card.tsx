@@ -20,7 +20,7 @@ export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => 
 
   // Determine the actual status to display
   const getDisplayStatus = () => {
-    if (campaign.status === 'recruitment_closed') {
+    if (campaign.status === 'closed') {
       return { label: '마감', color: 'bg-gray-100 text-gray-800' };
     }
     if (!isApplicationOpen) {
