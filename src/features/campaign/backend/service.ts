@@ -142,6 +142,7 @@ export const getCampaign = async (
         store_address,
         store_phone,
         status,
+        category,
         created_at,
         updated_at,
         advertiser_profiles!inner(
@@ -276,6 +277,7 @@ export const listAdvertiserCampaigns = async (
         store_address,
         store_phone,
         status,
+        category,
         created_at,
         updated_at,
         advertiser_profiles!inner(
