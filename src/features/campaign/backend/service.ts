@@ -62,6 +62,11 @@ export const listCampaigns = async (
       query = query.eq('category', category);
     }
 
+    // Apply status filter
+    if (status && status !== 'all') {
+      query = query.eq('status', status);
+    }
+
     const { data: campaigns, error, count } = await query;
 
     if (error) {
