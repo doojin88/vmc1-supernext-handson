@@ -11,7 +11,7 @@ SET
     recruitment_start_date = '2025-10-10',  -- 모집 시작일도 적절히 조정
     recruitment_end_date = '2025-10-16',
     status = 'recruiting'
-WHERE id = '88888888-8888-8888-8888-888888888888'
+WHERE id = '20b74445-521c-495a-9421-f97520faaafa'
   AND title = '박푸드트럭 스트리트푸드 체험단';
 
 COMMIT;
