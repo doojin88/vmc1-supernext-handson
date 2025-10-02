@@ -46,7 +46,7 @@ export const listCampaigns = async (
           business_name,
           category
         )
-      `)
+      `, { count: 'exact' })
       .eq('status', status)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
@@ -273,7 +273,7 @@ export const listAdvertiserCampaigns = async (
           business_name,
           category
         )
-      `)
+      `, { count: 'exact' })
       .eq('advertiser_id', advertiserUserId)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
