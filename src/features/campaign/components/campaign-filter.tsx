@@ -27,6 +27,9 @@ export const CampaignFilter = ({
 }: CampaignFilterProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
+  // Debug: Log props
+  console.log('CampaignFilter selectedCategory:', selectedCategory, 'onCategoryChange:', onCategoryChange);
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearchChange(localSearchQuery);
@@ -81,7 +84,10 @@ export const CampaignFilter = ({
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
-              onClick={() => onCategoryChange?.(category as CampaignCategory)}
+              onClick={() => {
+                console.log('Category clicked:', category, 'Current selected:', selectedCategory);
+                onCategoryChange?.(category as CampaignCategory);
+              }}
               className={`${
                 selectedCategory === category 
                   ? CATEGORY_COLORS[category]

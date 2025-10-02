@@ -21,6 +21,9 @@ export default function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const { isAuthenticated } = useCurrentUser();
 
+  // Debug: Log category changes
+  console.log('HomePage selectedCategory:', selectedCategory);
+
   const { data: campaignsData, isLoading, error } = useCampaignsQuery({
     page: currentPage,
     limit: 12,
