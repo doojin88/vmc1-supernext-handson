@@ -8,16 +8,19 @@ import { Search } from 'lucide-react';
 import { useCampaignsQuery } from '@/features/campaign/hooks/useCampaignsQuery';
 import { CampaignCard } from '@/features/campaign/components/campaign-card';
 import { CampaignFilter } from '@/features/campaign/components/campaign-filter';
+import { type CampaignCategory } from '@/features/campaign/constants/categories';
 
 export default function CampaignsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<CampaignCategory>('all');
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: campaignsData, isLoading, error } = useCampaignsQuery({
     page: currentPage,
     limit: 12,
     search: searchQuery || undefined,
+    category: selectedCategory !== 'all' ? selectedCategory : undefined,
   });
 
 
@@ -55,6 +58,8 @@ export default function CampaignsPage() {
                 <CampaignFilter
                   searchQuery={searchQuery}
                   onSearchChange={setSearchQuery}
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={setSelectedCategory}
                 />
               </Card>
             </div>
@@ -96,13 +101,16 @@ export default function CampaignsPage() {
                       : '현재 진행 중인 체험단이 없습니다.'
                     }
                   </p>
-                  {searchQuery && (
+                  {(searchQuery || selectedCategory !== 'all') && (
                     <Button
                       variant="outline"
                       className="mt-4"
-                      onClick={() => setSearchQuery('')}
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSelectedCategory('all');
+                      }}
                     >
-                      검색 초기화
+                      필터 초기화
                     </Button>
                   )}
                 </Card>
