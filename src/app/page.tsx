@@ -12,14 +12,13 @@ import { useCampaignsQuery } from '@/features/campaign/hooks/useCampaignsQuery';
 import { CampaignCard } from '@/features/campaign/components/campaign-card';
 import { CampaignFilter } from '@/features/campaign/components/campaign-filter';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
-import { useSupabase } from '@/lib/supabase/browser-client';
+import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 
 export default function HomePage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const { user, isAuthenticated, isLoading: userLoading } = useCurrentUser();
-  const supabase = useSupabase();
 
   const { data: campaignsData, isLoading, error } = useCampaignsQuery({
     page: currentPage,
@@ -32,6 +31,7 @@ export default function HomePage() {
   };
 
   const handleLogout = async () => {
+    const supabase = getSupabaseBrowserClient();
     await supabase.auth.signOut();
     router.refresh();
   };
