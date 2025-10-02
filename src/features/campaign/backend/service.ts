@@ -43,9 +43,9 @@ export const listCampaigns = async (
         category,
         created_at,
         updated_at,
-        advertiser_profiles!inner(
+        advertiser_profiles!advertiser_id(
           business_name,
-          category
+          business_type
         )
       `, { count: 'exact' })
       .eq('status', status)
@@ -102,7 +102,7 @@ export const listCampaigns = async (
       status: campaign.status,
       category: campaign.category,
       advertiserName: (campaign.advertiser_profiles as any).business_name,
-      advertiserBusinessType: (campaign.advertiser_profiles as any).category,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
       createdAt: campaign.created_at,
       updatedAt: campaign.updated_at,
     }));
@@ -150,9 +150,9 @@ export const getCampaign = async (
         category,
         created_at,
         updated_at,
-        advertiser_profiles!inner(
+        advertiser_profiles!advertiser_id(
           business_name,
-          category
+          business_type
         )
       `)
       .eq('id', id)
@@ -198,7 +198,7 @@ export const getCampaign = async (
       status: campaign.status,
       category: campaign.category,
       advertiserName: (campaign.advertiser_profiles as any).business_name,
-      advertiserBusinessType: (campaign.advertiser_profiles as any).category,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
       createdAt: campaign.created_at,
       updatedAt: campaign.updated_at,
     };
@@ -285,9 +285,9 @@ export const listAdvertiserCampaigns = async (
         category,
         created_at,
         updated_at,
-        advertiser_profiles!inner(
+        advertiser_profiles!advertiser_id(
           business_name,
-          category
+          business_type
         )
       `, { count: 'exact' })
       .eq('advertiser_id', advertiserUserId)
@@ -334,7 +334,7 @@ export const listAdvertiserCampaigns = async (
       status: campaign.status,
       category: campaign.category,
       advertiserName: (campaign.advertiser_profiles as any).business_name,
-      advertiserBusinessType: (campaign.advertiser_profiles as any).category,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
       createdAt: campaign.created_at,
       updatedAt: campaign.updated_at,
     }));
