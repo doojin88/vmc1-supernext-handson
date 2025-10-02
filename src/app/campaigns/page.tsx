@@ -23,7 +23,8 @@ export default function CampaignsPage() {
   // Debug logging
   console.log('Campaigns Page Debug:', {
     isLoading,
-    error,
+    error: error?.message,
+    errorDetails: error,
     campaignsData,
     campaignsLength: campaignsData?.campaigns?.length,
   });

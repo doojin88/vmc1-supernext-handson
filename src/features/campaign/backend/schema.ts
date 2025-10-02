@@ -27,8 +27,8 @@ export const CampaignSchema = z.object({
   status: CampaignStatusSchema,
   advertiserName: z.string(),
   advertiserBusinessType: z.string(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export type Campaign = z.infer<typeof CampaignSchema>;
