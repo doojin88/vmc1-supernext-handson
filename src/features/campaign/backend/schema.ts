@@ -10,7 +10,7 @@ export type CampaignCategory = z.infer<typeof CampaignCategorySchema>;
 export const ListCampaignsRequestSchema = z.object({
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(50).default(20),
-  status: z.enum(['recruiting', 'recruitment_closed', 'selection_completed']).optional(),
+  status: z.enum(['recruiting', 'recruitment_closed']).optional(),
   search: z.string().optional(),
   category: CampaignCategorySchema.optional(),
 });
