@@ -21,7 +21,7 @@ export const listCampaigns = async (
   params: ListCampaignsRequest,
 ): Promise<HandlerResult<ListCampaignsResponse, CampaignServiceError, unknown>> => {
   try {
-    const { page, limit, category, status = 'active', search } = params;
+    const { page, limit, status = 'recruiting', search } = params;
     const offset = (page - 1) * limit;
 
     // Build query
@@ -31,32 +31,27 @@ export const listCampaigns = async (
         id,
         title,
         description,
-        category,
-        target_audience,
-        requirements,
-        compensation,
-        application_deadline,
-        campaign_start_date,
-        campaign_end_date,
-        max_participants,
-        current_participants,
+        recruitment_start_date,
+        recruitment_end_date,
+        recruitment_count,
+        benefits,
+        mission,
+        store_name,
+        store_address,
+        store_phone,
         status,
         created_at,
         updated_at,
         advertiser_profiles!inner(
-          company_name,
-          business_type
+          business_name,
+          category
         )
       `)
       .eq('status', status)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
-    // Apply filters
-    if (category) {
-      query = query.eq('category', category);
-    }
-
+    // Apply search filter
     if (search) {
       query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
     }
@@ -84,18 +79,17 @@ export const listCampaigns = async (
       id: campaign.id,
       title: campaign.title,
       description: campaign.description,
-      category: campaign.category,
-      targetAudience: campaign.target_audience,
-      requirements: campaign.requirements,
-      compensation: campaign.compensation,
-      applicationDeadline: campaign.application_deadline,
-      campaignStartDate: campaign.campaign_start_date,
-      campaignEndDate: campaign.campaign_end_date,
-      maxParticipants: campaign.max_participants,
-      currentParticipants: campaign.current_participants,
+      recruitmentStartDate: campaign.recruitment_start_date,
+      recruitmentEndDate: campaign.recruitment_end_date,
+      recruitmentCount: campaign.recruitment_count,
+      benefits: campaign.benefits,
+      mission: campaign.mission,
+      storeName: campaign.store_name,
+      storeAddress: campaign.store_address,
+      storePhone: campaign.store_phone,
       status: campaign.status,
-      advertiserName: (campaign.advertiser_profiles as any).company_name,
-      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
+      advertiserName: (campaign.advertiser_profiles as any).business_name,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).category,
       createdAt: campaign.created_at,
       updatedAt: campaign.updated_at,
     }));
@@ -131,25 +125,24 @@ export const getCampaign = async (
         id,
         title,
         description,
-        category,
-        target_audience,
-        requirements,
-        compensation,
-        application_deadline,
-        campaign_start_date,
-        campaign_end_date,
-        max_participants,
-        current_participants,
+        recruitment_start_date,
+        recruitment_end_date,
+        recruitment_count,
+        benefits,
+        mission,
+        store_name,
+        store_address,
+        store_phone,
         status,
         created_at,
         updated_at,
         advertiser_profiles!inner(
-          company_name,
-          business_type
+          business_name,
+          category
         )
       `)
       .eq('id', id)
-      .eq('status', 'active')
+      .eq('status', 'recruiting')
       .single();
 
     if (error) {
@@ -180,18 +173,17 @@ export const getCampaign = async (
       id: campaign.id,
       title: campaign.title,
       description: campaign.description,
-      category: campaign.category,
-      targetAudience: campaign.target_audience,
-      requirements: campaign.requirements,
-      compensation: campaign.compensation,
-      applicationDeadline: campaign.application_deadline,
-      campaignStartDate: campaign.campaign_start_date,
-      campaignEndDate: campaign.campaign_end_date,
-      maxParticipants: campaign.max_participants,
-      currentParticipants: campaign.current_participants,
+      recruitmentStartDate: campaign.recruitment_start_date,
+      recruitmentEndDate: campaign.recruitment_end_date,
+      recruitmentCount: campaign.recruitment_count,
+      benefits: campaign.benefits,
+      mission: campaign.mission,
+      storeName: campaign.store_name,
+      storeAddress: campaign.store_address,
+      storePhone: campaign.store_phone,
       status: campaign.status,
-      advertiserName: (campaign.advertiser_profiles as any).company_name,
-      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
+      advertiserName: (campaign.advertiser_profiles as any).business_name,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).category,
       createdAt: campaign.created_at,
       updatedAt: campaign.updated_at,
     };
@@ -217,16 +209,15 @@ export const createCampaign = async (
         advertiser_id: advertiserUserId,
         title: data.title,
         description: data.description,
-        category: data.category,
-        target_audience: data.targetAudience,
-        requirements: data.requirements,
-        compensation: data.compensation,
-        application_deadline: data.applicationDeadline,
-        campaign_start_date: data.campaignStartDate,
-        campaign_end_date: data.campaignEndDate,
-        max_participants: data.maxParticipants,
-        current_participants: 0,
-        status: 'draft',
+        recruitment_start_date: data.recruitmentStartDate,
+        recruitment_end_date: data.recruitmentEndDate,
+        recruitment_count: data.recruitmentCount,
+        benefits: data.benefits,
+        mission: data.mission,
+        store_name: data.storeName,
+        store_address: data.storeAddress,
+        store_phone: data.storePhone,
+        status: 'recruiting',
       })
       .select()
       .single();
@@ -266,21 +257,20 @@ export const listAdvertiserCampaigns = async (
         id,
         title,
         description,
-        category,
-        target_audience,
-        requirements,
-        compensation,
-        application_deadline,
-        campaign_start_date,
-        campaign_end_date,
-        max_participants,
-        current_participants,
+        recruitment_start_date,
+        recruitment_end_date,
+        recruitment_count,
+        benefits,
+        mission,
+        store_name,
+        store_address,
+        store_phone,
         status,
         created_at,
         updated_at,
         advertiser_profiles!inner(
-          company_name,
-          business_type
+          business_name,
+          category
         )
       `)
       .eq('advertiser_id', advertiserUserId)
@@ -315,18 +305,17 @@ export const listAdvertiserCampaigns = async (
       id: campaign.id,
       title: campaign.title,
       description: campaign.description,
-      category: campaign.category,
-      targetAudience: campaign.target_audience,
-      requirements: campaign.requirements,
-      compensation: campaign.compensation,
-      applicationDeadline: campaign.application_deadline,
-      campaignStartDate: campaign.campaign_start_date,
-      campaignEndDate: campaign.campaign_end_date,
-      maxParticipants: campaign.max_participants,
-      currentParticipants: campaign.current_participants,
+      recruitmentStartDate: campaign.recruitment_start_date,
+      recruitmentEndDate: campaign.recruitment_end_date,
+      recruitmentCount: campaign.recruitment_count,
+      benefits: campaign.benefits,
+      mission: campaign.mission,
+      storeName: campaign.store_name,
+      storeAddress: campaign.store_address,
+      storePhone: campaign.store_phone,
       status: campaign.status,
-      advertiserName: (campaign.advertiser_profiles as any).company_name,
-      advertiserBusinessType: (campaign.advertiser_profiles as any).business_type,
+      advertiserName: (campaign.advertiser_profiles as any).business_name,
+      advertiserBusinessType: (campaign.advertiser_profiles as any).category,
       createdAt: campaign.created_at,
       updatedAt: campaign.updated_at,
     }));

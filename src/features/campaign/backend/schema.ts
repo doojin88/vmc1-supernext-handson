@@ -1,16 +1,12 @@
 import { z } from 'zod';
 
-export const CampaignStatusSchema = z.enum(['draft', 'active', 'paused', 'completed', 'cancelled']);
+export const CampaignStatusSchema = z.enum(['recruiting', 'recruitment_closed', 'selection_completed']);
 export type CampaignStatus = z.infer<typeof CampaignStatusSchema>;
-
-export const CampaignCategorySchema = z.enum(['food', 'beauty', 'fashion', 'tech', 'lifestyle', 'other']);
-export type CampaignCategory = z.infer<typeof CampaignCategorySchema>;
 
 export const ListCampaignsRequestSchema = z.object({
   page: z.number().int().min(1).default(1),
   limit: z.number().int().min(1).max(50).default(20),
-  category: CampaignCategorySchema.optional(),
-  status: z.enum(['active']).optional(), // Only show active campaigns to public
+  status: z.enum(['recruiting', 'recruitment_closed', 'selection_completed']).optional(),
   search: z.string().optional(),
 });
 
@@ -19,16 +15,15 @@ export type ListCampaignsRequest = z.infer<typeof ListCampaignsRequestSchema>;
 export const CampaignSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
-  description: z.string(),
-  category: CampaignCategorySchema,
-  targetAudience: z.string(),
-  requirements: z.string(),
-  compensation: z.string(),
-  applicationDeadline: z.string().datetime(),
-  campaignStartDate: z.string().datetime(),
-  campaignEndDate: z.string().datetime(),
-  maxParticipants: z.number().int().min(1),
-  currentParticipants: z.number().int().min(0),
+  description: z.string().nullable(),
+  recruitmentStartDate: z.string().date(),
+  recruitmentEndDate: z.string().date(),
+  recruitmentCount: z.number().int().min(1),
+  benefits: z.string(),
+  mission: z.string(),
+  storeName: z.string(),
+  storeAddress: z.string(),
+  storePhone: z.string().nullable(),
   status: CampaignStatusSchema,
   advertiserName: z.string(),
   advertiserBusinessType: z.string(),
@@ -62,32 +57,20 @@ export type GetCampaignResponse = z.infer<typeof GetCampaignResponseSchema>;
 
 export const CreateCampaignRequestSchema = z.object({
   title: z.string().min(1, '캠페인 제목을 입력해주세요').max(100),
-  description: z.string().min(10, '캠페인 설명은 최소 10자 이상 입력해주세요').max(2000),
-  category: CampaignCategorySchema,
-  targetAudience: z.string().min(10, '대상 고객은 최소 10자 이상 입력해주세요').max(500),
-  requirements: z.string().min(10, '참여 조건은 최소 10자 이상 입력해주세요').max(1000),
-  compensation: z.string().min(1, '보상을 입력해주세요').max(200),
-  applicationDeadline: z.string().datetime(),
-  campaignStartDate: z.string().datetime(),
-  campaignEndDate: z.string().datetime(),
-  maxParticipants: z.number().int().min(1, '최소 1명 이상이어야 합니다').max(1000),
+  description: z.string().max(2000).optional(),
+  recruitmentStartDate: z.string().date(),
+  recruitmentEndDate: z.string().date(),
+  recruitmentCount: z.number().int().min(1, '최소 1명 이상이어야 합니다').max(1000),
+  benefits: z.string().min(1, '혜택을 입력해주세요').max(1000),
+  mission: z.string().min(1, '미션을 입력해주세요').max(1000),
+  storeName: z.string().min(1, '매장명을 입력해주세요').max(100),
+  storeAddress: z.string().min(1, '매장 주소를 입력해주세요').max(200),
+  storePhone: z.string().max(20).optional(),
 }).refine(
-  (data) => new Date(data.applicationDeadline) > new Date(),
+  (data) => new Date(data.recruitmentStartDate) <= new Date(data.recruitmentEndDate),
   {
-    message: '신청 마감일은 현재 시간보다 늦어야 합니다',
-    path: ['applicationDeadline'],
-  }
-).refine(
-  (data) => new Date(data.campaignStartDate) > new Date(data.applicationDeadline),
-  {
-    message: '캠페인 시작일은 신청 마감일보다 늦어야 합니다',
-    path: ['campaignStartDate'],
-  }
-).refine(
-  (data) => new Date(data.campaignEndDate) > new Date(data.campaignStartDate),
-  {
-    message: '캠페인 종료일은 시작일보다 늦어야 합니다',
-    path: ['campaignEndDate'],
+    message: '모집 시작일은 모집 마감일보다 이르거나 같아야 합니다',
+    path: ['recruitmentStartDate'],
   }
 );
 
