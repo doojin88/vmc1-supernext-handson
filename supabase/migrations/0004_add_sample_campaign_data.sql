@@ -10,12 +10,42 @@ BEGIN;
 -- 1. SAMPLE USERS (for advertisers)
 -- ============================================================
 
--- Insert sample users into auth.users (these would normally be created through signup)
--- Note: In a real scenario, these would be created through the auth system
--- For demo purposes, we'll create them with fixed UUIDs
+-- Note: In a real application, users would be created through the auth system
+-- For demo purposes, we'll create sample users directly in auth.users
+-- This is only for development/testing purposes
 
--- Sample advertiser users (these would be created through the signup process in real app)
--- We'll use fixed UUIDs for consistency
+-- Create sample users in auth.users table
+INSERT INTO auth.users (
+    id,
+    instance_id,
+    aud,
+    role,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    recovery_sent_at,
+    last_sign_in_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    created_at,
+    updated_at,
+    confirmation_token,
+    email_change,
+    email_change_token_new,
+    recovery_token
+) VALUES
+-- Accommodation advertisers
+('11111111-1111-1111-1111-111111111111', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'hotel@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"김호텔"}', NOW(), NOW(), '', '', '', ''),
+('22222222-2222-2222-2222-222222222222', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'resort@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"박리조트"}', NOW(), NOW(), '', '', '', ''),
+('33333333-3333-3333-3333-333333333333', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'pension@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"이펜션"}', NOW(), NOW(), '', '', '', ''),
+('44444444-4444-4444-4444-444444444444', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'guesthouse@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"최게스트하우스"}', NOW(), NOW(), '', '', '', ''),
+
+-- Restaurant advertisers
+('55555555-5555-5555-5555-555555555555', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'restaurant@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"정식당"}', NOW(), NOW(), '', '', '', ''),
+('66666666-6666-6666-6666-666666666666', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'cafe@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"한카페"}', NOW(), NOW(), '', '', '', ''),
+('77777777-7777-7777-7777-777777777777', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'bakery@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"김베이커리"}', NOW(), NOW(), '', '', '', ''),
+('88888888-8888-8888-8888-888888888888', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'foodtruck@example.com', '$2a$10$dummy', NOW(), NULL, NOW(), '{"provider":"email","providers":["email"]}', '{"full_name":"박푸드트럭"}', NOW(), NOW(), '', '', '', '')
+ON CONFLICT (id) DO NOTHING;
 
 -- ============================================================
 -- 2. SAMPLE USER PROFILES
