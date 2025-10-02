@@ -53,7 +53,7 @@ export const Header = () => {
                 href="/dashboard" 
                 className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
               >
-                대시보드
+                광고주 대시보드
               </Link>
             )}
           </nav>
