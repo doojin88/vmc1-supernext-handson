@@ -264,3 +264,4 @@ npx playwright test tests/e2e/advertiser-dashboard.spec.ts --grep "failed"
 
 ---
 *문서 버전: 1.0 | 작성일: 2025-10-02 | 최종 수정일: 2025-10-02*
+

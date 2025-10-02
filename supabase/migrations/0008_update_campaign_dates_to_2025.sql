@@ -58,3 +58,4 @@ END
 WHERE category IS NULL OR category = '';
 
 COMMIT;
+
