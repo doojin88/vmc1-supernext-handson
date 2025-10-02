@@ -19,6 +19,22 @@ export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => 
   const isFull = campaign.status === 'recruitment_closed' || campaign.status === 'selection_completed';
   const canApply = isApplicationOpen && !isFull && campaign.status === 'recruiting';
 
+  // Determine the actual status to display
+  const getDisplayStatus = () => {
+    if (campaign.status === 'selection_completed') {
+      return { label: '선택완료', color: 'bg-gray-100 text-gray-800' };
+    }
+    if (campaign.status === 'recruitment_closed') {
+      return { label: '모집종료', color: 'bg-gray-100 text-gray-800' };
+    }
+    if (!isApplicationOpen) {
+      return { label: '마감', color: 'bg-gray-100 text-gray-800' };
+    }
+    return { label: '모집중', color: 'bg-green-100 text-green-800' };
+  };
+
+  const displayStatus = getDisplayStatus();
+
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MM/dd (EEE)', { locale: ko });
   };
@@ -28,16 +44,9 @@ export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => 
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <Badge
-              className={`${CAMPAIGN_STATUS_COLORS[campaign.status]} flex items-center gap-1`}
-            >
-              {CAMPAIGN_STATUS_LABELS[campaign.status]}
+            <Badge className={`${displayStatus.color} flex items-center gap-1`}>
+              {displayStatus.label}
             </Badge>
-            {!canApply && (
-              <Badge variant="secondary">
-                {isFull ? '모집완료' : '마감'}
-              </Badge>
-            )}
           </div>
           <h3 className="text-lg font-semibold text-slate-900 mb-2 line-clamp-2">
             {campaign.title}
@@ -79,7 +88,7 @@ export const CampaignCard = ({ campaign, onViewDetails }: CampaignCardProps) => 
           onClick={() => onViewDetails(campaign.id)}
           disabled={!canApply}
         >
-          {canApply ? '자세히 보기' : '마감됨'}
+          {canApply ? '자세히 보기' : displayStatus.label}
         </Button>
       </div>
     </Card>
