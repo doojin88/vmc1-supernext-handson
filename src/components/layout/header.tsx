@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { User, LogOut } from 'lucide-react';
@@ -9,12 +10,23 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 
 export const Header = () => {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading: userLoading } = useCurrentUser();
+  const { user, isAuthenticated, isLoading: userLoading, refresh } = useCurrentUser();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    const supabase = getSupabaseBrowserClient();
-    await supabase.auth.signOut();
-    router.refresh();
+    try {
+      setIsLoggingOut(true);
+      const supabase = getSupabaseBrowserClient();
+      await supabase.auth.signOut();
+      // 사용자 상태를 즉시 업데이트
+      await refresh();
+      // 페이지를 메인으로 리다이렉트
+      router.push('/');
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -62,10 +74,13 @@ export const Header = () => {
                       variant="ghost"
                       size="sm"
                       onClick={handleLogout}
+                      disabled={isLoggingOut}
                       className="flex items-center gap-2"
                     >
                       <LogOut className="h-4 w-4" />
-                      <span className="hidden sm:inline">로그아웃</span>
+                      <span className="hidden sm:inline">
+                        {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
+                      </span>
                     </Button>
                   </div>
                 ) : (
