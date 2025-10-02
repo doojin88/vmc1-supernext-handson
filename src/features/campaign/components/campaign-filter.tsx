@@ -27,6 +27,9 @@ export const CampaignFilter = ({
 }: CampaignFilterProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
+  // Debug logging
+  console.log('CampaignFilter props:', { searchQuery, onSearchChange, selectedCategory, onCategoryChange });
+
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearchChange(localSearchQuery);
@@ -40,7 +43,9 @@ export const CampaignFilter = ({
   const clearAllFilters = () => {
     setLocalSearchQuery('');
     onSearchChange('');
-    onCategoryChange('all' as CampaignCategory);
+    if (typeof onCategoryChange === 'function') {
+      onCategoryChange('all' as CampaignCategory);
+    }
   };
 
   const hasActiveFilters = searchQuery || selectedCategory !== 'all';
@@ -81,7 +86,14 @@ export const CampaignFilter = ({
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
-              onClick={() => onCategoryChange(category as CampaignCategory)}
+              onClick={() => {
+                console.log('Category clicked:', category, 'onCategoryChange:', onCategoryChange);
+                if (typeof onCategoryChange === 'function') {
+                  onCategoryChange(category as CampaignCategory);
+                } else {
+                  console.error('onCategoryChange is not a function:', onCategoryChange);
+                }
+              }}
               className={`${
                 selectedCategory === category 
                   ? CATEGORY_COLORS[category]
@@ -123,7 +135,11 @@ export const CampaignFilter = ({
                 카테고리: {CATEGORY_LABELS[selectedCategory]}
                 <X
                   className="h-3 w-3 cursor-pointer"
-                  onClick={() => onCategoryChange('all' as CampaignCategory)}
+                  onClick={() => {
+                    if (typeof onCategoryChange === 'function') {
+                      onCategoryChange('all' as CampaignCategory);
+                    }
+                  }}
                 />
               </Badge>
             )}
