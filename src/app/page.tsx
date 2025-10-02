@@ -5,20 +5,19 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Users, TrendingUp, Star, Search, User, LogOut } from 'lucide-react';
+import { ArrowRight, Users, TrendingUp, Star, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCampaignsQuery } from '@/features/campaign/hooks/useCampaignsQuery';
 import { CampaignCard } from '@/features/campaign/components/campaign-card';
 import { CampaignFilter } from '@/features/campaign/components/campaign-filter';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
-import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 
 export default function HomePage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, isAuthenticated, isLoading: userLoading } = useCurrentUser();
+  const { isAuthenticated } = useCurrentUser();
 
   const { data: campaignsData, isLoading, error } = useCampaignsQuery({
     page: currentPage,
@@ -30,52 +29,8 @@ export default function HomePage() {
     router.push(`/campaigns/${campaignId}`);
   };
 
-  const handleLogout = async () => {
-    const supabase = getSupabaseBrowserClient();
-    await supabase.auth.signOut();
-    router.refresh();
-  };
-
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header with User Info */}
-      <header className="absolute top-0 left-0 right-0 z-10">
-        <div className="mx-auto max-w-7xl px-6 py-4 lg:px-8">
-          <div className="flex justify-end">
-            {!userLoading && (
-              <div className="flex items-center gap-4">
-                {isAuthenticated && user ? (
-                  <>
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <User className="h-4 w-4" />
-                      <span>{user.full_name || user.email}</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleLogout}
-                      className="flex items-center gap-2"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      로그아웃
-                    </Button>
-                  </>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href="/login">로그인</Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href="/signup">가입하기</Link>
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
