@@ -24,8 +24,7 @@ export const registerCampaignRoutes = (app: Hono<AppEnv>) => {
     const params = {
       page: Number(url.searchParams.get('page')) || 1,
       limit: Number(url.searchParams.get('limit')) || 20,
-      category: url.searchParams.get('category') || undefined,
-      status: url.searchParams.get('status') || 'active',
+      status: url.searchParams.get('status') || 'recruiting',
       search: url.searchParams.get('search') || undefined,
     };
 

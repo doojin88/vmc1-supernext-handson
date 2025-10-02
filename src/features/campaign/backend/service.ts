@@ -66,7 +66,8 @@ export const listCampaigns = async (
       );
     }
 
-    if (!campaigns) {
+    // campaigns가 null이거나 undefined인 경우에만 오류 처리
+    if (campaigns === null || campaigns === undefined) {
       return failure(
         404,
         campaignErrorCodes.campaignsNotFound,
@@ -292,7 +293,8 @@ export const listAdvertiserCampaigns = async (
       );
     }
 
-    if (!campaigns) {
+    // campaigns가 null이거나 undefined인 경우에만 오류 처리
+    if (campaigns === null || campaigns === undefined) {
       return failure(
         404,
         campaignErrorCodes.campaignsNotFound,
