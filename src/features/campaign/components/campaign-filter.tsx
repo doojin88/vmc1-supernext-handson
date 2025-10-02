@@ -5,11 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, X } from 'lucide-react';
-import { 
-  CAMPAIGN_CATEGORIES, 
-  CATEGORY_LABELS, 
+import {
+  CAMPAIGN_CATEGORIES,
+  CAMPAIGN_STATUSES,
+  CATEGORY_LABELS,
+  STATUS_LABELS,
   CATEGORY_COLORS,
-  type CampaignCategory 
+  STATUS_COLORS,
+  type CampaignCategory,
+  type CampaignStatus
 } from '../constants/categories';
 
 type CampaignFilterProps = {
@@ -17,6 +21,8 @@ type CampaignFilterProps = {
   onSearchChange: (query: string) => void;
   selectedCategory: CampaignCategory;
   onCategoryChange?: (category: CampaignCategory) => void;
+  selectedStatus: CampaignStatus;
+  onStatusChange?: (status: CampaignStatus) => void;
 };
 
 export const CampaignFilter = ({
@@ -24,6 +30,8 @@ export const CampaignFilter = ({
   onSearchChange,
   selectedCategory,
   onCategoryChange,
+  selectedStatus,
+  onStatusChange,
 }: CampaignFilterProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
@@ -44,9 +52,10 @@ export const CampaignFilter = ({
     setLocalSearchQuery('');
     onSearchChange('');
     onCategoryChange?.('all' as CampaignCategory);
+    onStatusChange?.('all' as CampaignStatus);
   };
 
-  const hasActiveFilters = searchQuery || selectedCategory !== 'all';
+  const hasActiveFilters = searchQuery || selectedCategory !== 'all' || selectedStatus !== 'all';
 
   return (
     <div className="space-y-6">
@@ -89,12 +98,34 @@ export const CampaignFilter = ({
                 onCategoryChange?.(category as CampaignCategory);
               }}
               className={`${
-                selectedCategory === category 
+                selectedCategory === category
                   ? CATEGORY_COLORS[category]
                   : 'hover:bg-slate-50'
               } transition-colors`}
             >
               {CATEGORY_LABELS[category]}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Status Filter */}
+      <div>
+        <h3 className="text-sm font-medium text-slate-700 mb-3">모집상태</h3>
+        <div className="flex flex-wrap gap-2">
+          {CAMPAIGN_STATUSES.map((status) => (
+            <Button
+              key={status}
+              variant={selectedStatus === status ? "default" : "outline"}
+              size="sm"
+              onClick={() => onStatusChange?.(status as CampaignStatus)}
+              className={`${
+                selectedStatus === status
+                  ? STATUS_COLORS[status]
+                  : 'hover:bg-slate-50'
+              } transition-colors`}
+            >
+              {STATUS_LABELS[status]}
             </Button>
           ))}
         </div>
@@ -130,6 +161,15 @@ export const CampaignFilter = ({
                 <X
                   className="h-3 w-3 cursor-pointer"
                   onClick={() => onCategoryChange?.('all' as CampaignCategory)}
+                />
+              </Badge>
+            )}
+            {selectedStatus !== 'all' && (
+              <Badge variant="secondary" className="flex items-center gap-1">
+                상태: {STATUS_LABELS[selectedStatus]}
+                <X
+                  className="h-3 w-3 cursor-pointer"
+                  onClick={() => onStatusChange?.('all' as CampaignStatus)}
                 />
               </Badge>
             )}

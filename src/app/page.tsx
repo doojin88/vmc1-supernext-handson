@@ -12,12 +12,13 @@ import { useCampaignsQuery } from '@/features/campaign/hooks/useCampaignsQuery';
 import { CampaignCard } from '@/features/campaign/components/campaign-card';
 import { CampaignFilter } from '@/features/campaign/components/campaign-filter';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
-import { type CampaignCategory } from '@/features/campaign/constants/categories';
+import { type CampaignCategory, type CampaignStatus } from '@/features/campaign/constants/categories';
 
 export default function HomePage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CampaignCategory>('all');
+  const [selectedStatus, setSelectedStatus] = useState<CampaignStatus>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const { isAuthenticated } = useCurrentUser();
 
@@ -29,6 +30,7 @@ export default function HomePage() {
     limit: 12,
     search: searchQuery || undefined,
     category: selectedCategory !== 'all' ? selectedCategory : undefined,
+    status: selectedStatus !== 'all' ? selectedStatus : undefined,
   });
 
   const handleViewDetails = (campaignId: string) => {
@@ -73,6 +75,8 @@ export default function HomePage() {
                   onSearchChange={setSearchQuery}
                   selectedCategory={selectedCategory}
                   onCategoryChange={setSelectedCategory}
+                  selectedStatus={selectedStatus}
+                  onStatusChange={setSelectedStatus}
                 />
               </Card>
             </div>
